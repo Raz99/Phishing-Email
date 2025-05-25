@@ -1,0 +1,134 @@
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+def generate_phishing_email(username, mail_service, title, job_title, status, kids):
+    def format_kids_message(kids):
+        if not kids:
+            return ""
+        ages = [int(age.strip()) for age in kids.split(",") if age.strip().isdigit()]
+        if not ages:
+            return ""
+        if len(ages) == 1:
+            return f"especially with a young child aged {ages[0]}"
+        return f"especially with children aged between {min(ages)} and {max(ages)}"
+
+    kids_note = format_kids_message(kids)
+
+    fake_link = f"http://{mail_service.lower()}-secure-verify.com/login"
+
+    email_html = f"""
+    <html>
+    <head>
+        <style>
+            body {{
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #f9f9f9;
+                color: #333;
+                padding: 20px;
+            }}
+            .email-container {{
+                background-color: #ffffff;
+                padding: 30px;
+                border-radius: 8px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                max-width: 600px;
+                margin: auto;
+            }}
+            .header {{
+                background-color: #0073e6;
+                padding: 10px;
+                text-align: center;
+                color: white;
+                font-size: 18px;
+                font-weight: bold;
+                border-radius: 6px 6px 0 0;
+            }}
+            .button {{
+                display: inline-block;
+                padding: 12px 24px;
+                margin-top: 20px;
+                background-color: #0073e6;
+                color: #ffffff;
+                text-decoration: none;
+                border-radius: 4px;
+                font-weight: bold;
+            }}
+            .footer {{
+                font-size: 12px;
+                color: #888;
+                margin-top: 30px;
+                text-align: center;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="email-container">
+            <div class="header">
+                SecureMail Internal Notification
+            </div><br>
+            <p>Dear {title} {username},</p>
+
+            <p>As a valued {job_title} in our organization, and considering your {status} status {("- " + kids_note) if kids_note else ""}, we want to ensure uninterrupted access to your {mail_service} services.</p>
+
+            <p>We’ve detected system-wide updates affecting some user accounts. To avoid disruptions, please validate your credentials through our secure portal.</p>
+
+            <a href="{fake_link}" class="button">Update Now</a>
+
+            <p>If you’ve already completed this step, no further action is needed.</p>
+
+            <div class="footer">
+                © 2025 SecureMail IT Division · This is an internal security notification.<br>
+                Please do not reply to this email.
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    return email_html
+
+def send_email(smtp_host, smtp_port, smtp_user, smtp_pass, from_email, to_email, subject, body_html):
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"] = from_email
+    msg["To"] = to_email
+
+    part = MIMEText(body_html, "html")
+    msg.attach(part)
+
+    try:
+        with smtplib.SMTP(smtp_host, smtp_port) as server:
+            server.starttls()
+            server.login(smtp_user, smtp_pass)
+            server.sendmail(from_email, [to_email], msg.as_string())
+            print(f"\n✅ Email sent successfully to {to_email}")
+    except Exception as e:
+        print(f"\n❌ Failed to send email: {e}")
+
+
+if __name__ == "__main__":
+    print("=== Phishing Email Generator & Sender (HTML) ===")
+    username = input("Victim's name: ")
+    mail_service = input("Mail service (e.g., Gmail): ")
+    title = input("Title (Mr./Ms./Dr.): ")
+    job_title = input("Job title: ")
+    status = input("Personal status: ")
+    has_kids = input("Has kids? (yes/no): ").lower()
+    kids_ages = input("Enter kids' ages (comma-separated): ") if has_kids == "yes" else ""
+
+    email_html = generate_phishing_email(username, mail_service, title, job_title, status, kids_ages)
+
+    print("\n--- Email Preview (HTML) ---\n")
+    print(email_html)
+
+    send_now = input("\nSend this email? (yes/no): ").lower()
+    if send_now == "yes":
+        smtp_host = input("SMTP server (e.g., mail.smtp2go.com): ")
+        smtp_port = int(input("SMTP port (e.g., 587): "))
+        smtp_user = input("SMTP username: ")
+        smtp_pass = input("SMTP password: ")
+        from_email = input("From (your email address): ")
+        to_email = input("To (victim's email address): ")
+
+        send_email(smtp_host, smtp_port, smtp_user, smtp_pass, from_email, to_email, "Account Security Update",
+                   email_html)
