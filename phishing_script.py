@@ -77,7 +77,7 @@ def send_email(from_email, to_email, subject, body_text, use_local=True, smtp_in
 
 if __name__ == "__main__":
     print("=== Smart Phishing Mimic Tool (Stage 2) ===")
-    benign_input = input("Enter benign email (text, .txt path, or URL): ")
+    benign_input = input("Enter benign email (string, .txt path, or URL): ")
     benign_text = load_benign_email(benign_input)
 
     username = input("Victim's name: ")
