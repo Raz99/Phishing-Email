@@ -8,12 +8,17 @@ from email.mime.text import MIMEText
 
 def load_benign_email(source):
     if os.path.isfile(source):
+        # If the source is a file path, read the content
         with open(source, 'r', encoding='utf-8') as f:
             return f.read()
+
     elif source.startswith("http://") or source.startswith("https://"):
+        # If the source is a URL, fetch the content
         response = requests.get(source)
         return response.text
+
     else:
+        # If the source is a plain string, return it directly
         return source
 
 def rewrite_benign_to_phishing_html(benign_text, mail_service, sender_name="Joseph"):
@@ -25,6 +30,7 @@ def rewrite_benign_to_phishing_html(benign_text, mail_service, sender_name="Jose
     injected = False
 
     def smart_link_replace_escaped(line):
+        # This function replaces keywords with a phishing link in the given line
         nonlocal injected
         for verb in keywords:
             pattern = rf"\b({verb})\b"
@@ -47,6 +53,7 @@ def rewrite_benign_to_phishing_html(benign_text, mail_service, sender_name="Jose
         html_lines.append(replaced_line)
 
     if not injected:
+        # If no keywords were found, append a phishing link at the end
         html_lines.append(f'Please <a href="{phishing_link}">verify here</a> that you\'ve received my message.')
         html_lines.append(f"<i>Thanks, {html.escape(sender_name)}</i>")
 
