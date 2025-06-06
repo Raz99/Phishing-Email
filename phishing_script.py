@@ -55,7 +55,6 @@ def rewrite_benign_to_phishing_html(benign_text, mail_service, sender_name="Jose
     if not injected:
         # If no keywords were found, append a phishing link at the end
         html_lines.append(f'Please <a href="{phishing_link}">verify here</a> that you\'ve received my message.')
-        html_lines.append(f"<i>Thanks, {html.escape(sender_name)}</i>")
 
     return "<br>\n".join(html_lines)
 
