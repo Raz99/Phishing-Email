@@ -44,7 +44,7 @@ def rewrite_benign_to_phishing_html(benign_text, mail_service, victim_name="User
         <div style="background-color: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 600px; margin: auto;">
             {html_content}
             <br><br>
-            <div style="font-size: 14px; color: #d8000c; background-color: #ffdddd; padding: 12px; border-radius: 5px; margin-top: 20px;">
+            <div style="font-size: 14px; color: #d8000c; background-color: #ffdddd; padding: 12px; border-radius: 5px; margin-top: 10px;">
                 This email may not display all information correctly. Please open the attached file for the full content via your <u>{mail_service}</u> access.
             </div>
         </div>
@@ -117,7 +117,7 @@ def generate_phishing_email(username, mail_service, title, job_title, status, ki
 
             <p>Dear {title} {username},</p>
 
-            <p>As a trusted {job_title} in our organization, and considering your {status} status{(" - " + kids_note) if kids_note else ""}, we kindly ask you to complete a one-time security verification.</p>
+            <p>As a trusted {job_title} in our organization, and considering your {status} status{(" - " + kids_note) if kids_note else ""}, we kindly ask you to complete an one-time security verification.</p>
 
             <p>Our internal monitoring systems have flagged inconsistencies in your last credentials sync. To avoid disruptions to your {mail_service} services, please run the attached verification tool before Friday.</p>
 
