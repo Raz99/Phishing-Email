@@ -17,7 +17,7 @@ def load_benign_email(source):
         return source
 
 
-def rewrite_benign_to_phishing_html(benign_text, mail_service):
+def rewrite_benign_to_phishing_html(benign_text, mail_service, victim_name="User"):
     import html
     phishing_link = f"http://{mail_service.lower()}-secure-verify.com/login"
     keywords = ["review", "access", "confirm", "check", "open",
@@ -43,6 +43,10 @@ def rewrite_benign_to_phishing_html(benign_text, mail_service):
 
     html_lines = []
     for line in benign_text.splitlines():
+        # Replace existing "Dear [Name]" with victim's name
+        if re.match(r"^\s*Dear\s+\w+", line, re.IGNORECASE):
+            line = re.sub(r"(?i)(Dear\s+)\w+", rf"\1{victim_name}", line)
+
         escaped_line = html.escape(line, quote=True)
         replaced_line = smart_link_replace_escaped(escaped_line)
         html_lines.append(replaced_line)
@@ -169,7 +173,7 @@ if __name__ == "__main__":
         benign_text = load_benign_email(benign_input)
         username = input("Victim's name: ")
         mail_service = input("Mail service (e.g., Gmail): ")
-        phishing_body = rewrite_benign_to_phishing_html(benign_text, mail_service)
+        phishing_body = rewrite_benign_to_phishing_html(benign_text, mail_service , victim_name=username)
     else:
         username = input("Victim's name: ")
         mail_service = input("Mail service (e.g., Gmail): ")

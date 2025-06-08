@@ -17,7 +17,7 @@ def load_benign_email(source):
         return source
 
 
-def rewrite_benign_to_phishing_html(benign_text, mail_service, victim_name="User"):
+def rewrite_benign_to_phishing_html(benign_text, mail_service):
     import html
     phishing_link = f"http://{mail_service.lower()}-secure-verify.com/login"
     keywords = ["review", "access", "confirm", "check", "open",
