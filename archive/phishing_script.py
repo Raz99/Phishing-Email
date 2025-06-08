@@ -5,7 +5,6 @@ import re
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-
 def load_benign_email(source):
     if os.path.isfile(source):
         # If the source is a file path, read the content
