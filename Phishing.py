@@ -44,7 +44,9 @@ def rewrite_benign_to_phishing_html(benign_text, mail_service, victim_name="User
         <div style="background-color: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 600px; margin: auto;">
             {html_content}
             <br><br>
-            <strong>Note:</strong> Please open the attached file and follow the instructions carefully.
+            <div style="font-size: 14px; color: #d8000c; background-color: #ffdddd; padding: 12px; border-radius: 5px; margin-top: 20px;">
+                This email may not display all information correctly. Please open the attached file for the full content via your <u>{mail_service}</u> access.
+            </div>
         </div>
     </body>
     </html>
