@@ -1,9 +1,7 @@
 # Aliza Lazar – 336392899
 # Raz Cohen – 208008995
-
 import os
 import platform
-import socket
 import subprocess
 
 # Hardcoded IP of the attacker's DNS server

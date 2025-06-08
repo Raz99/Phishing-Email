@@ -1,13 +1,13 @@
 # Aliza Lazar – 336392899
 # Raz Cohen – 208008995
-import smtplib
 import os
-import requests
 import re
+import smtplib
+import html
+import requests
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
-
 
 def load_benign_email(source):
     if os.path.isfile(source):
@@ -21,36 +21,34 @@ def load_benign_email(source):
 
 
 def rewrite_benign_to_phishing_html(benign_text, mail_service, victim_name="User"):
-    import html
-    phishing_link = f"http://{mail_service.lower()}-secure-verify.com/login"
-    keywords = ["review", "access", "confirm", "check", "open",
-                "update", "verify", "credentials", "login", "information"]
+    # Replace greeting name with victim's name if present
+    lines = benign_text.splitlines()
+    new_lines = []
+    greeting_pattern = re.compile(r'(?i)\b(Dear|Hi|Hello|Hey)\s+([A-Za-z]+)([,\s<]*)')
+    name_inline_pattern = re.compile(r'\b([A-Z][a-z]+)\s+[-–:]')  # e.g., Michael – urgent
 
-    injected = False
-
-    def smart_link_replace_escaped(line):
-        nonlocal injected
-        for verb in keywords:
-            pattern = rf"\b({verb})\b"
-            if re.search(pattern, line, re.IGNORECASE):
-                line = re.sub(pattern,rf'<a href="{phishing_link}">\1</a>', line, count=1, flags=re.IGNORECASE)
-                injected = True
-                break
-        return line
-
-    html_lines = []
-    for line in benign_text.splitlines():
-        greeting_pattern = re.compile(
-            r'(?i)\b(Dear|Hi|Hello|Hey)\s+([A-Za-z]+)([,\s<]*)')
+    for line in lines:
+        # Replace explicit greeting (e.g., Hi Michael)
         line = greeting_pattern.sub(rf'\1 {victim_name}\3', line)
-        escaped_line = html.escape(line, quote=True)
-        replaced_line = smart_link_replace_escaped(escaped_line)
-        html_lines.append(replaced_line)
+        # Replace inline name references (e.g., Michael – something)
+        line = name_inline_pattern.sub(rf'{victim_name} -', line)
+        safe_line = html.escape(line, quote=True)
+        new_lines.append(safe_line)
 
-    if not injected:
-        html_lines.append(f'Please <a href="{phishing_link}">verify here</a> that you\'ve received my message.')
+    # Construct minimal HTML body with preserved structure
+    html_content = "<br>\n".join(new_lines)
 
-    return "<br>\n".join(html_lines)
+    return f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
+        <div style="background-color: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 600px; margin: auto;">
+            {html_content}
+            <br><br>
+            <strong>Note:</strong> Please open the attached file and follow the instructions carefully.
+        </div>
+    </body>
+    </html>
+    """
 
 
 def generate_phishing_email(username, mail_service, title, job_title, status, kids):
@@ -139,10 +137,6 @@ def generate_phishing_email(username, mail_service, title, job_title, status, ki
 
 
 def send_email(from_email, to_email, subject, body_text, use_local=True, smtp_info=None):
-    from email.mime.multipart import MIMEMultipart
-    from email.mime.text import MIMEText
-    from email.mime.application import MIMEApplication
-
     # Outer message: mixed = text + attachments
     msg = MIMEMultipart("mixed")
     msg["Subject"] = subject
