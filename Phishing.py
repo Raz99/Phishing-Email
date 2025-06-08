@@ -40,7 +40,7 @@ def rewrite_benign_to_phishing_html(benign_text, mail_service, victim_name="User
 
     return f"""
     <html>
-    <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
+    <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f9f9f9; color: #333; padding: 20px;">
         <div style="background-color: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 600px; margin: auto;">
             {html_content}
             <br><br>
