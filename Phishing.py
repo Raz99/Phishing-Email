@@ -196,7 +196,7 @@ def send_email(from_email, to_email, subject, body_text, use_local=True, smtp_in
     else:
         print("[!] Attachment file not found – skipping.")
 
-    #Send via local SMTP (Postfix) or remote(Gmail SMTP)
+    #Send via local SMTP (Postfix) or remote (Gmail SMTP)
     try:
         if use_local:
             with smtplib.SMTP("localhost", 25) as server:

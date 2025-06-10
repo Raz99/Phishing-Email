@@ -19,7 +19,6 @@ def create_exe():
         os.remove("attachment")
 
     # Build Phase (Create Executable)
-
     # Run PyInstaller to convert the Python script 'attachment_payload.py' into a single-file executable
     run([
         "attachment_payload.py", #This is the script we want to convert into an executable
