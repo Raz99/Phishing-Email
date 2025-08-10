@@ -1,0 +1,2 @@
+# Core dependency for HTTP requests
+requests>=2.32
