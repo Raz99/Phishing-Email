@@ -14,6 +14,11 @@ The simulation is designed to run entirely in a safe, isolated setup (e.g., virt
 - Simulated malware execution logic.
 - Covert data exfiltration using **DNS tunneling**.
 
+### Example phishing email (safe lab simulation)
+<p align="center">
+  <img src="assets/email_inbox.png" alt="Email Inbox" width="500"/>
+</p>
+
 ---
 
 ## Features
@@ -101,13 +106,7 @@ Open the victim's mail client or webmail and verify email delivery.
 ---
 
 ## Screenshots (from Victim's machine)
-
-1. **Phishing email preview in victim inbox**  
-<p align="center">
-  <img src="assets/email_inbox.png" alt="Email Inbox" width="500"/>
-</p>
-
-2. **Attachment execution + DNS tunneling logs (running in background)**
+**Attachment execution + DNS tunneling logs (running in background)**
 <p align="center">
   <img src="assets/dns_tunneling.png" alt="DNS Tunneling" width="500"/>
 </p>
@@ -125,8 +124,3 @@ Phishing-Email/
 ├── README.md
 └── assets/                  # Screenshots from Attacker & Victim's virtual machines  
 ```
-
----
-
-## License
-MIT License © 2025 Raz Cohen  
