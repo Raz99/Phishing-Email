@@ -1,4 +1,5 @@
-# Phishing Email Simulation - Educational Cybersecurity Project
+# Phishing Email Simulation
+## Educational Cybersecurity Project
 
 > **Disclaimer:** This project is for educational and research purposes **only**.  
 > Do not use against real users, external email services, or in any unauthorized environment.
@@ -117,14 +118,12 @@ Open the victim's mail client or webmail and verify email delivery.
 
 ```
 Phishing-Email/
-│
 ├── Phishing.py              # Main script - builds and sends phishing email
 ├── attach_create.py         # Converts payload script into executable
 ├── attachment_payload.py    # Simulated post-delivery malicious actions
 ├── requirements.txt
 ├── README.md
-└── assets/
-    └── screenshots/         # Screenshots from Attacker & Victim's virtual machines
+└── assets/                  # Screenshots from Attacker & Victim's virtual machines  
 ```
 
 ---
