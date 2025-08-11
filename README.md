@@ -48,14 +48,14 @@ The simulation is designed to run entirely in a safe, isolated setup (e.g., virt
 ## Architecture / Workflow
 
 ```text
-[ Attacker VM ]
+[ Attacker's VM ]
    |
    |--(1) Run Phishing.py → Collect target info
    |--(2) Optionally import and mimic a benign email
    |--(3) Generate MIME email with attachment
    |--(4) Send via Postfix SMTP server
    ↓
-[ Victim VM ]
+[ Victim's VM ]
    |
    |--(5) Receives email
    |--(6) Opens attachment
@@ -100,12 +100,12 @@ You will be prompted for:
 - Children info (and ages)
 - Optional benign email source (URL / file / text)
 
-### Check on victim VM
+### Check on victim's VM
 Open the victim's mail client or webmail and verify email delivery.
 
 ---
 
-## Screenshots (from Victim's machine)
+## Screenshots (from victim's VM)
 **Attachment execution + DNS tunneling logs (running in background)**
 <p align="center">
   <img src="assets/dns_tunneling.png" alt="DNS Tunneling" width="500"/>
@@ -124,3 +124,9 @@ Phishing-Email/
 ├── README.md
 └── assets/                  # Screenshots from Attacker & Victim's virtual machines  
 ```
+
+---
+
+## Authors
+- Raz Cohen  
+- Aliza Lazar
