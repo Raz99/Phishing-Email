@@ -1,6 +1,4 @@
-# Aliza Lazar – 336392899
-# Raz Cohen – 208008995
-
+# Raz Cohen, Aliza Lazar
 import os # For system commands and environment variables
 import shutil # For file and directory operations
 from PyInstaller.__main__ import run # PyInstaller's run function to create the executable
